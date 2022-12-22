@@ -22,10 +22,7 @@ else {
 	}
 }
 
-const util = require('util')
-const fs = require('fs')
 const networkAddress = require('network-address')
-const path = require('path')
 const WebTorrent = require('webtorrent')
 const createTorrent = require('create-torrent')
 
