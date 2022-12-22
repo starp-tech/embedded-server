@@ -1,20 +1,36 @@
-const util = require('util')
-const fs = require('fs')
-const networkAddress = require('network-address')
-const path = require('path')
-const args = require('args')
-const WebTorrent = require('webtorrent')
-const createTorrent = require('create-torrent')
-
-let server:any;
 let debugMode = false
-
+const args = require('args')
 args
   .option('media', 'a magnet link to media')
   .option('seed', 'a magnet link to media for seed')
   .option('debug', 'extensive logs')
   .option('path', 'filesystem path to new torrent')
   .option('downloadLimit', "speed limit for media")
+
+const flags = args.parse(process.argv)
+
+if(flags.debug) {
+	console.info("debugMode", flags.debug)
+	debugMode = true
+}
+else {
+	console = {
+		...console,
+		log:()=>{},
+		warn:()=>{},
+		error:()=>{}
+	}
+}
+
+const util = require('util')
+const fs = require('fs')
+const networkAddress = require('network-address')
+const path = require('path')
+const WebTorrent = require('webtorrent')
+const createTorrent = require('create-torrent')
+
+let server:any;
+
 
 const startServer = async (media:any, print?:boolean) => 
 	new Promise(resolve=>{
@@ -53,16 +69,9 @@ const createMedia = async (filePath:string) => {
 	})
 }
 
-const flags = args.parse(process.argv)
-
 const client = new WebTorrent({
 	downloadLimit:flags.downloadLimit
 })
-
-if(flags.debug) {
-	console.info("debugMode", flags.debug)
-	debugMode = true
-}
 
 if(debugMode)
 	console.info('Start With Flags', flags)
