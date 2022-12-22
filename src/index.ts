@@ -24,46 +24,50 @@ else {
 
 const networkAddress = require('network-address')
 const WebTorrent = require('webtorrent')
-const createTorrent = require('create-torrent')
 
 let server:any;
 
 
 const startServer = async (media:any, print?:boolean) => 
-	new Promise(resolve=>{
-		
-		if(debugMode)
-			console.info('startServer for media', media)
+	new Promise((resolve,reject)=>{
+		try {
+			if(debugMode)
+				console.info('startServer for media', media.magnetURI)
 
-	  if (server) return
+		  if (server) return
 
-	  server = media.createServer()
-	  server.listen(0, () => {
-	    const port = server.address().port
-	    const urlSuffix = ':' + port
-	    const info = {
-	      torrentKey: media.key,
-	      localURL: 'http://localhost' + urlSuffix,
-	      networkURL: 'http://' + networkAddress() + urlSuffix,
-	      networkAddress: networkAddress()
-	    }
-	    
-	    if(debugMode || print)
-	    	console.info(info)
+		  server = media.createServer()
+		  server.listen(0, () => {
+		    const port = server.address().port
+		    const urlSuffix = ':' + port
+		    const info = {
+		      torrentKey: media.key,
+		      localURL: 'http://localhost' + urlSuffix,
+		      networkURL: 'http://' + networkAddress() + urlSuffix,
+		      networkAddress: networkAddress()
+		    }
+		    
+		    if(debugMode || print)
+		    	console.info(info)
 
-	    resolve(info)
-	  })
+		    resolve(info)
+		  })
+
+  	} catch(err){
+	  	console.error("startServer error", err)
+	  	reject(err)
+  	}
 	})
 
 const createMedia = async (filePath:string) => {
-	createTorrent(filePath, (err:any, torrent:any) => {
-	  if (!err) {
-	    client.add(torrent, async (media:any)=>{
+	try {
+		client.seed(filePath, async (media:any) => {
 	    	await startServer(media)
 	    	console.info(media.magnetURI)
-	    })
-	  }
-	})
+		})
+	} catch(err){
+  	console.error("createMedia error", err)
+	}
 }
 
 const client = new WebTorrent({
@@ -88,4 +92,4 @@ if(flags.path)
 	createMedia(flags.path)
 
 if(debugMode)
-	console.info("Stop App")
+	console.info("Wait For App")
