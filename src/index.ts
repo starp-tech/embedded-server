@@ -1,5 +1,6 @@
 let debugMode = false
-const args = require('args')
+import args from 'args'
+import networkAddress from 'network-address'
 
 args
   .option('media', 'a magnet link to media')
@@ -23,13 +24,15 @@ else {
 	}
 }
 
-const networkAddress = require('network-address')
-const WebTorrent = require('webtorrent')
+import * as webT from 'webtorrent'
+
+let WebTorrent = webT;
 
 let server:any;
+let client:any;
 
 
-const startServer = async (media:any, print?:boolean) => 
+export const startServer = async (media:any, print?:boolean) => 
 	new Promise((resolve,reject)=>{
 		try {
 			if(debugMode)
@@ -60,7 +63,7 @@ const startServer = async (media:any, print?:boolean) =>
   	}
 	})
 
-const createMedia = async (filePath:string) => {
+export const createMedia = async (filePath:string) => {
 	try {
 		client.seed(filePath, async (media:any) => {
     	// await startServer(media)
@@ -76,11 +79,7 @@ const createMedia = async (filePath:string) => {
 	}
 }
 
-const client = new WebTorrent({
-	downloadLimit:flags.downloadLimit
-})
-
-const addMedia = async (media) => {
+export const addMedia = async (media) => {
 
 	if(media.search("magnet") === -1) {
 		if(debugMode)
@@ -98,17 +97,39 @@ const addMedia = async (media) => {
 	)
 }
 
-if(debugMode)
-	console.info('Start With Flags', flags)
-
-if(flags.media) {
+const start = () => {
+	client = new WebTorrent.default({
+		downloadLimit:flags.downloadLimit
+	})
 	if(debugMode)
-		console.info("client add media")
-	addMedia(flags.media)
+		console.info('Start With Flags', flags)
+
+	if(flags.media) {
+		if(debugMode)
+			console.info("client add media")
+		addMedia(flags.media)
+	}
+
+	if(flags.path) 
+		createMedia(flags.path)
+
+	if(debugMode)
+		console.info("Wait For App")
 }
 
-if(flags.path) 
-	createMedia(flags.path)
+export const setup = async () => {
+	try {
+		const obj = await import('webtorrent-hybrid')
+		WebTorrent = obj
+		if(debugMode)
+			console.info('import hybrid', WebTorrent)
+	} catch(err) {
+		console.error("import hybrid error", err)
+	}
+	await start()
+}
 
-if(debugMode)
-	console.info("Wait For App")
+
+export default setup
+
+setup()
