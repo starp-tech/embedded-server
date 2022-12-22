@@ -9,10 +9,9 @@
     "fullpipeline": "npm run build && npm run pkg && npm run test",
     "build": "tsc -p `pwd`/",
     "pkg": "pkg .",
-    "test": "npm run testCreate",
-    "testSeed": "./dist/wt-pkg-macos -s=`pwd`/README.md",
-    "testCreate": "./dist/wt-pkg-macos -d=1 -p=`pwd`/README.md",
-    "testStream": "./dist/wt-pkg-macos -m='magnet:?xt=urn:btih:6a9759bffd5c0af65319979fb7832189f4f3c35d&dn=sintel.mp4&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel-1024-surround.mp4'"
+    "test": "npm run create",
+    "create": "./dist/wt-pkg-macos -d=1 -p=`pwd`/README.md",
+    "stream": "./dist/wt-pkg-macos -m='magnet:?xt=urn:btih:6a9759bffd5c0af65319979fb7832189f4f3c35d&dn=sintel.mp4&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel-1024-surround.mp4'"
   },
   "pkg": {
     "scripts": "index.js",
@@ -27,6 +26,8 @@
   "license": "ISC",
   "dependencies": {
     "args": "^5.0.3",
+    "atob": "^2.1.2",
+    "btoa": "^1.2.1",
     "music-metadata": "^8.1.0",
     "network-address": "^1.1.2",
     "webtorrent": "^1.9.6"

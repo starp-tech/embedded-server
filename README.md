@@ -7,7 +7,7 @@ npm start
 then exit with control+c and run the following commands:
 
 ```
-chmod +x dist/wt-pkg
+chmod +x dist/wt-pkg-macos 
 dist/wt-pkg-macos --help
 ```
 

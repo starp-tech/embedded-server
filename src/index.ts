@@ -1,10 +1,16 @@
 let debugMode = false
 const args = require('args')
+
+// @ts-ignore
+atob = require('atob')
+// @ts-ignore
+btoa = require('btoa')
+
 args
   .option('media', 'a magnet link to media')
   .option('seed', 'a magnet link to media for seed')
   .option('debug', 'extensive logs')
-  .option('path', 'filesystem path to new torrent')
+  .option('path', 'filesystem path to new media')
   .option('downloadLimit', "speed limit for media")
 
 const flags = args.parse(process.argv)
@@ -62,8 +68,10 @@ const startServer = async (media:any, print?:boolean) =>
 const createMedia = async (filePath:string) => {
 	try {
 		client.seed(filePath, async (media:any) => {
-	    	await startServer(media)
-	    	console.info(media.magnetURI)
+    	await startServer(media)
+    	console.info(media.torrentFile)
+    	const mediaFile = media.torrentFile.toString("base64")
+    	console.info(mediaFile, mediaFile.length)
 		})
 	} catch(err){
   	console.error("createMedia error", err)
@@ -74,18 +82,31 @@ const client = new WebTorrent({
 	downloadLimit:flags.downloadLimit
 })
 
+const addMedia = async (media) => {
+
+	if(media.search("magnet") === -1) {
+		if(debugMode)
+			console.info('no magnet', media)
+
+		media = Buffer.from(media, 'base64');
+
+		if(debugMode)
+			console.info('no magnet', media)
+	}
+
+	client.add(
+		media, 
+		(nMedia:any) => startServer(nMedia, true)
+	)
+}
+
 if(debugMode)
 	console.info('Start With Flags', flags)
 
 if(flags.media) {
-	
 	if(debugMode)
 		console.info("client add media")
-
-	client.add(
-		flags.media, 
-		(media:any) => startServer(media, true)
-	)
+	addMedia(flags.media)
 }
 
 if(flags.path) 
