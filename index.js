@@ -1,4 +1,3 @@
-
 const crypto = require('crypto')
 const util = require('util')
 const fs = require('fs')
@@ -6,6 +5,7 @@ const networkAddress = require('network-address')
 const path = require('path')
 const args = require('args')
 const WebTorrent = require('webtorrent')
+// const { createTorrent } = require('create-torrent')
 
 const client = new WebTorrent({
 	// downloadLimit:1000
@@ -16,6 +16,7 @@ let debugMode = false
 args
   .option('media', 'a magnet link to media')
   .option('debug', 'extensive logs', false)
+  .option('path', 'filesystem path to new torrent')
 
 const startServer = async (media) => 
 	new Promise(resolve=>{
@@ -40,6 +41,16 @@ const startServer = async (media) =>
 	  })
 	})
 
+const createMedia = async (filePath) => {
+	// createTorrent(filePath, (err, torrent) => {
+	//   if (!err) {
+	//     client.add(torrent, (media)=>{
+	//     	console.info(media)
+	//     })
+	//   }
+	// })
+}
+
 const flags = args.parse(process.argv)
 
 if(flags.debug === true) {
@@ -54,6 +65,9 @@ if(flags.media)
 		flags.media, 
 		(media) => startServer(media)
 	)
+
+if(flags.path) 
+	createMedia(flags.path)
 
 if(debugMode)
 	console.info("Stop App")
