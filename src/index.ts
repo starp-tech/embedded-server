@@ -4,7 +4,7 @@ const networkAddress = require('network-address')
 const path = require('path')
 const args = require('args')
 const WebTorrent = require('webtorrent')
-const { createTorrent } = require('create-torrent')
+const createTorrent = require('create-torrent')
 
 const client = new WebTorrent({
 	// downloadLimit:1000
