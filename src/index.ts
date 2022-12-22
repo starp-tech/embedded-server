@@ -18,7 +18,7 @@ args
   .option('debug', 'extensive logs')
   .option('path', 'filesystem path to new torrent')
 
-const startServer = async (media:any) => 
+const startServer = async (media:any, print?:boolean) => 
 	new Promise(resolve=>{
 		
 		if(debugMode)
@@ -36,7 +36,10 @@ const startServer = async (media:any) =>
 	      networkURL: 'http://' + networkAddress() + urlSuffix,
 	      networkAddress: networkAddress()
 	    }
-	    console.info(info)
+	    
+	    if(debugMode || print)
+	    	console.info(info)
+
 	    resolve(info)
 	  })
 	})
@@ -44,8 +47,9 @@ const startServer = async (media:any) =>
 const createMedia = async (filePath:string) => {
 	createTorrent(filePath, (err:any, torrent:any) => {
 	  if (!err) {
-	    client.add(torrent, (media:any)=>{
-	    	console.info(media)
+	    client.add(torrent, async (media:any)=>{
+	    	await startServer(media)
+	    	console.info(media.magnetURI)
 	    })
 	  }
 	})
@@ -53,7 +57,7 @@ const createMedia = async (filePath:string) => {
 
 const flags = args.parse(process.argv)
 
-if(flags.debug === "true") {
+if(flags.debug) {
 	console.info("debugMode", flags.debug)
 	debugMode = true
 }
@@ -61,17 +65,14 @@ if(flags.debug === "true") {
 if(debugMode)
 	console.info('Start With Flags', flags)
 
-if(flags.seed)
-	client.seed(flags.seed, (media:any)=>{
-    console.log(media.magnetURI)
-	})
-
 if(flags.media) {
+	
 	if(debugMode)
 		console.info("client add media")
+
 	client.add(
 		flags.media, 
-		(media:any) => startServer(media)
+		(media:any) => startServer(media, true)
 	)
 }
 
