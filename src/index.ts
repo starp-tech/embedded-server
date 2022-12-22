@@ -1,11 +1,6 @@
 let debugMode = false
 const args = require('args')
 
-// @ts-ignore
-atob = require('atob')
-// @ts-ignore
-btoa = require('btoa')
-
 args
   .option('media', 'a magnet link to media')
   .option('seed', 'a magnet link to media for seed')
@@ -68,10 +63,13 @@ const startServer = async (media:any, print?:boolean) =>
 const createMedia = async (filePath:string) => {
 	try {
 		client.seed(filePath, async (media:any) => {
-    	await startServer(media)
-    	console.info(media.torrentFile)
+    	// await startServer(media)
+			
+			if(debugMode)
+	    	console.info(media.torrentFile)
+
     	const mediaFile = media.torrentFile.toString("base64")
-    	console.info(mediaFile, mediaFile.length)
+    	console.info(mediaFile)
 		})
 	} catch(err){
   	console.error("createMedia error", err)
