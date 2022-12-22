@@ -2,12 +2,12 @@
   "name": "wt-pkg",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "bin": "index.js",
+  "main": "src/index.js",
+  "bin": "src/index.js",
   "scripts": {
-    "build": "pkg .",
+    "build": "tsc && pkg .",
     "test": "npm run testStream",
-    "testStream":"./dist/wt-pkg --media='magnet:?xt=urn:btih:6a9759bffd5c0af65319979fb7832189f4f3c35d&dn=sintel.mp4&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel-1024-surround.mp4'"
+    "testStream": "./dist/wt-pkg --media='magnet:?xt=urn:btih:6a9759bffd5c0af65319979fb7832189f4f3c35d&dn=sintel.mp4&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel-1024-surround.mp4'"
   },
   "pkg": {
     "scripts": "index.js",
@@ -23,7 +23,38 @@
     "create-torrent": "^6.0.2",
     "music-metadata": "^8.1.0",
     "network-address": "^1.1.2",
-    "pkg": "^5.8.0",
     "webtorrent": "^1.9.6"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.2",
+    "lint-staged": "9.5.0",
+    "pkg": "^5.8.0",
+    "prettier": "1.19.1",
+    "typescript": "^4.9.0"
+  },
+  "prettier": {
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": false,
+    "printWidth": 60
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2022
+    },
+    "ignorePatterns": [
+      "node_modules"
+    ],
+    "rules": {}
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
   }
 }
