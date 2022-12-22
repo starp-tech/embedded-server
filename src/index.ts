@@ -15,7 +15,7 @@ let debugMode = false
 args
   .option('media', 'a magnet link to media')
   .option('seed', 'a magnet link to media for seed')
-  .option('debug', 'extensive logs', false)
+  .option('debug', 'extensive logs')
   .option('path', 'filesystem path to new torrent')
 
 const startServer = async (media:any) => 
@@ -53,7 +53,8 @@ const createMedia = async (filePath:string) => {
 
 const flags = args.parse(process.argv)
 
-if(flags.debug === true) {
+if(flags.debug === "true") {
+	console.info("debugMode", flags.debug)
 	debugMode = true
 }
 
@@ -62,14 +63,17 @@ if(debugMode)
 
 if(flags.seed)
 	client.seed(flags.seed, (media:any)=>{
-    console.log('Client is seeding ' + media)
+    console.log(media.magnetURI)
 	})
 
-if(flags.media) 
+if(flags.media) {
+	if(debugMode)
+		console.info("client add media")
 	client.add(
 		flags.media, 
 		(media:any) => startServer(media)
 	)
+}
 
 if(flags.path) 
 	createMedia(flags.path)
