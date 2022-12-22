@@ -6,9 +6,6 @@ const args = require('args')
 const WebTorrent = require('webtorrent')
 const createTorrent = require('create-torrent')
 
-const client = new WebTorrent({
-	// downloadLimit:1000
-})
 let server:any;
 let debugMode = false
 
@@ -17,6 +14,7 @@ args
   .option('seed', 'a magnet link to media for seed')
   .option('debug', 'extensive logs')
   .option('path', 'filesystem path to new torrent')
+  .option('downloadLimit', "speed limit for media")
 
 const startServer = async (media:any, print?:boolean) => 
 	new Promise(resolve=>{
@@ -56,6 +54,10 @@ const createMedia = async (filePath:string) => {
 }
 
 const flags = args.parse(process.argv)
+
+const client = new WebTorrent({
+	downloadLimit:flags.downloadLimit
+})
 
 if(flags.debug) {
 	console.info("debugMode", flags.debug)
