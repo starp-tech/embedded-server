@@ -69,4 +69,4 @@ src/**/*.js.map
 
 index-linux
 index-macos
-index-win
+index-win.exe

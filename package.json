@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "bin": "src/index.js",
   "scripts": {
+    "start":"npm run build && npm run pkg && npm run test",
     "build": "tsc -p `pwd`/",
     "pkg": "pkg .",
     "test": "npm run testStream",

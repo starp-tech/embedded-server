@@ -14,6 +14,7 @@ let debugMode = false
 
 args
   .option('media', 'a magnet link to media')
+  .option('seed', 'a magnet link to media for seed')
   .option('debug', 'extensive logs', false)
   .option('path', 'filesystem path to new torrent')
 
@@ -58,6 +59,11 @@ if(flags.debug === true) {
 
 if(debugMode)
 	console.info('Start With Flags', flags)
+
+if(flags.seed)
+	client.seed(flags.seed, (media:any)=>{
+    console.log('Client is seeding ' + media)
+	})
 
 if(flags.media) 
 	client.add(
