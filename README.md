@@ -5,12 +5,14 @@ npm start
 ```
 
 then exit with control+c and run the following commands:
+
 ```
 chmod +x dist/wt-pkg
-dist/wt-pkg --help
+dist/wt-pkg-macos --help
 ```
 
 the output with the help will follow:
+
 ```
 
   Usage: index.js [options] [command]
