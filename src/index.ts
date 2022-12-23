@@ -1,10 +1,12 @@
 let debugMode = false
 import args from 'args'
+import * as fs from 'fs'
 import networkAddress from 'network-address'
 
 args
-  .option('media', 'a magnet link to media')
+  .option('media', 'a link to media')
   .option('binary', 'a binary of media file to stream')
+  .option('outputBinary', 'add binary output for the media file')
   .option('seed', 'a magnet link to media for seed')
   .option('debug', 'extensive logs')
   .option('path', 'filesystem path to new media')
@@ -14,7 +16,9 @@ args
 const flags = args.parse(process.argv)
 
 if(flags.debug) {
-	process.stdout.write("debugMode")
+	console.log("debugMode")
+	console.log(__dirname)
+	console.log(fs.readdirSync(__dirname), fs.readdirSync(__dirname.replace('src', "")))
 	debugMode = true
 }
 else {
@@ -53,12 +57,13 @@ export const startServer = async (media:any, print?:boolean) =>
 		    	port,
 		      localURL: 'http://localhost' + urlSuffix,
 		      networkURL: 'http://' + networkAddress() + urlSuffix,
-		      networkAddress: networkAddress()
+		      networkAddress: networkAddress(),
+		      "isWTPKGInfoJSON":true
 		    }
 		    const json = 
 		    		JSON.stringify(info)
 		    if(debugMode) {
-			    console.log(json)
+		    	console.info(json)
 		    }
 		    if(print) {
 		    	process.stdout.write(json)
@@ -77,10 +82,23 @@ export const createMedia = async (filePath:string) => {
 	try {
 		client.seed(filePath, async (media:any) => {
     	// await startServer(media)
-    	console.log(media.torrentFile)
+    	console.log("createMedia res", media)
 
     	const mediaFile = media.torrentFile.toString("base64")
-    	process.stdout.write(mediaFile)
+    	const json = {
+    		files:[media.files.map(f=>f.name)],
+    		magnetURI:media.magnetURI,
+    		infoHash:media.infoHash,
+    		length:media.length,
+    		created:media.created,
+    		createdBy:media.createdBy,
+    		mediaFile:null,
+    	}
+
+    	if(flags.outputBinary)
+    		json.mediaFile = mediaFile
+
+    	process.stdout.write(JSON.stringify(json))
     	// console.info(mediaFile)
 		})
 	} catch(err){
@@ -94,17 +112,22 @@ export const addMedia = async (media, isBuffer = false) => {
 		console.log('no magnet', media)
 		media = Buffer.from(media, 'base64')
 
+		console.info("no magnet buffer", media.toString("utf8"))
+		
 		if(!isBuffer) {
 			media = media.toString("utf8");
 		}
 
 		console.log('no magnet', media)
 	}
-
-	client.add(
-		media, 
-		(nMedia:any) => startServer(nMedia, true)
-	)
+	try {
+		client.add(
+			media, 
+			(nMedia:any) => startServer(nMedia, true)
+		)
+	} catch(err){
+		console.error("addMedia error", err)
+	}
 }
 
 export const addMediaBuffer = async (media) => addMedia(media, true)
@@ -120,16 +143,18 @@ const start = () => {
 
 		if(flags.media) {
 			console.log("client add media")
-			addMedia(flags.media)
+			return addMedia(flags.media)
 		}
 
 		if(flags.binary) {
 			console.log("client add binary")
-			addMediaBuffer(flags.binary)
+			return addMediaBuffer(flags.binary)
 		}
 
-		if(flags.path) 
-			createMedia(flags.path)
+		if(flags.path) {
+			console.log("client create media")
+			return createMedia(flags.path)
+		}
 
 		console.log("Wait For App")
 

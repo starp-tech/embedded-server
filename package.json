@@ -10,18 +10,23 @@
     "fullpipeline": "npm run buildpipe && npm run test",
     "create": "npm run buildpipe && npm run createTest",
     "stream": "npm run buildpipe && npm run streamTest",
+    "streamdh": "npm run buildpipe && npm run streamTestDebug",
+    "streamdh": "npm run buildpipe && npm run streamTestDebugHybrid",
     "buildpipe":"npm run build && npm run pkg",
     "build": "tsc -p `pwd`/",
-    "pkg": "pkg .",
+    "pkg": "pkg . --options experimental-modules=1",
     "test": "npm run createTest",
     "testn": "npm run build && node src/index.js -d=1 -p=`pwd`/README.md",
     "app": "node src/index.js",
-    "createTest": "./dist/wt-pkg-macos -p=`pwd`/README.md",
+    "createTest": "./dist/wt-pkg-macos -p=`pwd`/README.md",  
+    "streamTestDebug": "./dist/wt-pkg-macos -d=1 -m='magnet:?xt=urn:btih:6a9759bffd5c0af65319979fb7832189f4f3c35d&dn=sintel.mp4&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel-1024-surround.mp4'",
+    "streamTestDebugHybrid": "./dist/wt-pkg-macos -d=1 -h=1 -m='magnet:?xt=urn:btih:6a9759bffd5c0af65319979fb7832189f4f3c35d&dn=sintel.mp4&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel-1024-surround.mp4'",
     "streamTest": "./dist/wt-pkg-macos -m='magnet:?xt=urn:btih:6a9759bffd5c0af65319979fb7832189f4f3c35d&dn=sintel.mp4&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel-1024-surround.mp4'"
   },
   "pkg": {
     "scripts":["./package.json"],
     "assets": ["./package.json"],
+
     "targets": [
       "node16",
       "linux",
