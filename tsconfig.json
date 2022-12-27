@@ -5,6 +5,7 @@
     "importHelpers": true,
     "moduleResolution": "node16",
     "esModuleInterop": true,
+    "resolveJsonModule":true,
     "allowSyntheticDefaultImports": true
   },
   "include": [

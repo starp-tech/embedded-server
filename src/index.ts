@@ -1,8 +1,8 @@
 let debugMode = false
-import args from 'args'
-import * as fs from 'fs'
-import networkAddress from 'network-address'
-
+const args = require('args')
+const fs = require('fs')
+const networkAddress = require('network-address')
+// const nTracker = "wss://media.starpy.me" 
 args
   .option('media', 'a link to media')
   .option('binary', 'a binary of media file to stream')
@@ -17,6 +17,7 @@ const flags = args.parse(process.argv)
 
 if(flags.debug) {
 	console.log("debugMode")
+	console.log(process.version)
 	console.log(__dirname)
 	console.log(fs.readdirSync(__dirname), fs.readdirSync(__dirname.replace('src', "")))
 	debugMode = true
@@ -80,10 +81,12 @@ export const startServer = async (media:any, print?:boolean) =>
 
 export const createMedia = async (filePath:string) => {
 	try {
-		client.seed(filePath, async (media:any) => {
-    	// await startServer(media)
+		client.seed(filePath,
+			// {announceList:[[nTracker]]}, 
+		async (media:any) => {
+    	const server = await startServer(media)
     	console.log("createMedia res", media)
-
+    	media.resume()
     	const mediaFile = media.torrentFile.toString("base64")
     	const json = {
     		files:[media.files.map(f=>f.name)],
@@ -93,6 +96,7 @@ export const createMedia = async (filePath:string) => {
     		created:media.created,
     		createdBy:media.createdBy,
     		mediaFile:null,
+    		server
     	}
 
     	if(flags.outputBinary)
@@ -168,8 +172,8 @@ export const setup = async () => {
 	console.info('start setup hybrid')
 	if(flags.hybrid) {
 		try {
-			const obj = await import('webtorrent-hybrid')
-			WebTorrent = obj
+			// const obj = await import('webtorrent-hybrid')
+			// WebTorrent = obj
 			console.log('import hybrid', WebTorrent)
 		} catch(err) {
 			console.error("import hybrid error", err)

@@ -68,6 +68,7 @@ src/**/*.js
 src/**/*.js.map
 src/**/*.mjs
 src/**/*.mjs.map
+output
 
 index-linux
 index-macos
