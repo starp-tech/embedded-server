@@ -2,7 +2,7 @@ let debugMode = false
 const args = require('args')
 const fs = require('fs')
 const networkAddress = require('network-address')
-// const nTracker = "wss://media.starpy.me" 
+const mediaHosts = [["wss://media.starpy.me"]]
 args
   .option('media', 'a link to media')
   .option('binary', 'a binary of media file to stream')
@@ -82,7 +82,7 @@ export const startServer = async (media:any, print?:boolean) =>
 export const createMedia = async (filePath:string) => {
 	try {
 		client.seed(filePath,
-			// {announceList:[[nTracker]]}, 
+			{announceList:mediaHosts}, 
 		async (media:any) => {
     	const server = await startServer(media)
     	console.log("createMedia res", media)
